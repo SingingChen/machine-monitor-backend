@@ -29,10 +29,15 @@ sudo chmod -R 755 .
 ```
 
 ### 3. 套件安裝
+方式 A：透過 Docker 執行安裝 (推薦)
+這樣做可以確保套件是在與執行環境一致的容器內安裝，並自動同步到你的 WSL 資料夾。
 在專案根目錄下安裝必要的通訊與資料庫工具：
 ```bash
-npm install @google-cloud/pubsub @nestjs/websockets @nestjs/platform-socket.io @prisma/client
-npm install prisma --save-dev
+# 1. 安裝正式執行需要的套件  --legacy-peer-deps 參數用於解決相依性衝突問題  
+docker exec -it machine_api npm install @google-cloud/pubsub @nestjs/websockets @nestjs/platform-socket.io @prisma/client --save-dev --legacy-peer-deps
+
+# 2. 安裝開發用的 Prisma 工具
+docker exec -it machine_api npm install prisma --save-dev --save-dev --legacy-peer-deps
 ```
 
 ### 4. 設定環境變數
