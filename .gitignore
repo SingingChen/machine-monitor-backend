@@ -1,0 +1,75 @@
+# --- 編譯與依賴 ---
+node_modules/
+/dist
+/artifacts
+/build
+
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# 排除 GCP 金鑰檔，避免外洩
+gcp-key.json
+your-local-gcp-key.json
+
+
+# --- 資料庫 ---
+/prisma/migrations
+*.db
+*.db-journal
+
+# --- Docker ---
+.dockerignore
+
+# OS
+.DS_Store
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# --- 環境變數與金鑰 (極其重要) ---
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+*.json
+!package.json
+!tsconfig.json
+!nest-cli.json
+
+# temp directory
+.temp
+.tmp
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
