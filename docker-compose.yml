@@ -25,11 +25,15 @@ services:
     environment:
       # 注意：這裡的 db 是 service 名稱，Docker 會自動解析 IP
       DATABASE_URL: "postgresql://user:password@db:5432/machine_db?schema=public"
-      GOOGLE_APPLICATION_CREDENTIALS: "/app/gcp-key.json"
+      # 如果你現在還沒放金鑰，先註解掉下面這行，避免啟動失敗
+      # GOOGLE_APPLICATION_CREDENTIALS: "/usr/src/app/gcp-key.json"
     depends_on:
       - db
     volumes:
-      - ./your-local-gcp-key.json:/app/gcp-key.json # 掛載 GCP 金鑰
+      - .:/usr/src/app            # <--- 加入這行，程式碼才會同步
+      - /usr/src/app/node_modules # <--- 加入這行，避免套件衝突
+      # 下面這行先註解掉，等你有金鑰檔案時再開啟
+     # - ./gcp-key.json:/usr/src/app/gcp-key.json
 
 volumes:
   postgres_data:
