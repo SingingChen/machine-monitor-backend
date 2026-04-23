@@ -1,0 +1,35 @@
+import {Injectable, OnModuleInit} from '@nestjs/common';
+import {PubSub} from '@google-cloud/pubsub';
+
+@Injectable()
+export class PubSubService implements OnModuleInit {
+  private pubSub: PubSub;
+  private topicName = 'machine-status-topic';
+
+  async onModuleInit() {
+    // 初始化 Pub/Sub 客户端
+    this.pubSub = new PubSub({
+      projectId: 'local-project',
+    });
+
+    // 確保 Topic 存在（模擬器環境下建議手動確認一次）
+    try {
+      await this.pubSub.createTopic(this.topicName);
+      console.log(`Topic ${this.topicName} 建立成功`);
+    } catch (e) {
+      console.log(`Topic ${this.topicName} 已存在`);
+    }
+  }
+
+  async publishMessage(data: any) {
+    const dataBuffer = Buffer.from(JSON.stringify(data));
+    try {
+      const messageId = await this.pubSub.topic(this.topicName).publishMessage({ data: dataBuffer });
+      console.log(`訊息已發布，ID: ${messageId}`);
+      return messageId;
+    } catch (error) {
+      console.error(`Error publishing message: ${error}`);
+    }
+
+  }
+}
