@@ -1,6 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { PubSub } from '@google-cloud/pubsub';
 import { MachineService } from './machine.service';
+import {MachineGateway} from "./machine.gateway";
 
 @Injectable()
 
@@ -9,8 +10,10 @@ export class MachineWorkerService implements OnModuleInit {
   private subscriptionName = 'machine-status-subs';
   private topicName = 'machine-status-topic';
 
-  constructor(private readonly machineService: MachineService) {
-  }
+  constructor(
+    private readonly machineService: MachineService,
+    private readonly machineGateway: MachineGateway // 注入大喇叭
+    ) {}
 
   async onModuleInit() {
     this.pubSub = new PubSub({
@@ -41,9 +44,11 @@ export class MachineWorkerService implements OnModuleInit {
 
     try{
       // 呼叫原本的 MachineService 存入資料庫
-      await this.machineService.createStatus(data)
+      const result = this.machineService.createStatus(data)
       console.log('✅ 訊息處理成功並存入資料庫');
 
+      // 關鍵：存檔成功後，立刻廣播給前端！
+      this.machineGateway.broadcastMachineStatus(result)
       // 告訴 Pub/Sub 我們處理完了，訊息可以從隊列移除了
       message.ack();
     }catch(e){

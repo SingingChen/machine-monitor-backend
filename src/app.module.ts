@@ -5,6 +5,7 @@ import { PrismaService } from './prisma.service';
 import {PubSubService} from "./pubsub.service";
 import { MachineService } from './machine.service';
 import {MachineWorkerService} from "./machine-worker.service";
+import {MachineGateway} from "./machine.gateway";
 
 @Module({
   imports: [],
@@ -14,7 +15,8 @@ import {MachineWorkerService} from "./machine-worker.service";
     PrismaService,
     MachineService,
     PubSubService,
-    MachineWorkerService
+    MachineWorkerService,
+    MachineGateway
   ],
 })
 export class AppModule {}
