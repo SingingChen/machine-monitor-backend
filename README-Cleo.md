@@ -78,7 +78,7 @@ machine-monitor-backend/
 ## 🚦 如何運行專案
 目前進度已準備好啟動，請執行：
 1. **啟動容器**: `docker-compose up -d`
-2. **同步資料庫**: `npx prisma db push`
+2. **同步資料庫**: `docker exec -it machine_api npx prisma db push`
 
 ---
 
@@ -87,3 +87,16 @@ machine-monitor-backend/
 * **GCP 金鑰**: 請確保將你的 `gcp-key.json` 放置於根目錄（此檔案不會被上傳）。
 
 ---
+
+## npx prisma generate 要每次輸入嗎？
+答案是：不需要。
+
+為什麼不用？
+因為 prisma generate 產生的檔案存放在 node_modules 資料夾中。沒有刪除 node_modules 資料夾，或是沒有更動 schema.prisma 模型，這些型別定義就會一直存在。
+
+什麼時候「才要」再輸入？
+只有當修改了 prisma/schema.prisma（例如新增了一個欄位、改了表名），你才需要再次執行：
+
+docker exec -it machine_api npx prisma db push（更新資料庫表結構 只有當你修改了模型，且要更新資料庫表格時。）
+
+docker exec -it machine_api npx prisma generate（更新程式碼型別定義 只有當你修改了 schema.prisma 模型時）

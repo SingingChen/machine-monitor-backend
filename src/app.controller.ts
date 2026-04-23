@@ -1,12 +1,21 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Controller, Post, Body, Get } from '@nestjs/common';
+import { MachineService } from './machine.service';
 
-@Controller()
+@Controller('machine')
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly machineService: MachineService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Post('status')
+  async receiveStatus(@Body() statusData: any) {
+    console.log('接收到機器數據:', statusData);
+    // 呼叫 Service 存入資料庫
+    const result = await this.machineService.createStatus(statusData);
+    return {
+      message: '狀態已接收並存儲',
+      data: result,
+      db_id: result.id // 回傳資料庫生成的 ID
+    };
   }
+
+
 }
