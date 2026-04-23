@@ -100,3 +100,11 @@ machine-monitor-backend/
 docker exec -it machine_api npx prisma db push（更新資料庫表結構 只有當你修改了模型，且要更新資料庫表格時。）
 
 docker exec -it machine_api npx prisma generate（更新程式碼型別定義 只有當你修改了 schema.prisma 模型時）
+
+## 隔天開機後的「自我檢查」清單
+
+雖然指令不用重打，但建議每天 up 之後做這兩件事確保環境正常：
+1. 檢查日誌：確保 NestJS 有順利連上資料庫。
+    Bash
+    docker logs -f machine_api
+2. 確認路由：看看有沒有出現那行藝術品般的 Mapped {/machine/status, POST}。
