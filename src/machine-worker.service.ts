@@ -7,8 +7,8 @@ import {MachineGateway} from "./machine.gateway";
 
 export class MachineWorkerService implements OnModuleInit {
   private pubSub: PubSub;
-  private subscriptionName = 'machine-status-subs';
-  private topicName = 'machine-status-topic';
+  private subscriptionName = 'machine-status-sub';
+  private topicName = 'machine-status';
 
   constructor(
     private readonly machineService: MachineService,
@@ -17,23 +17,24 @@ export class MachineWorkerService implements OnModuleInit {
 
   async onModuleInit() {
     this.pubSub = new PubSub({
-      projectId: 'local-project',
+      projectId: process.env.GCP_PROJECT_ID,
     });
 
-    // 確保訂閱存在（模擬器環境下建議手動確認一次）
-    try {
-      const [subscription] = await this.pubSub
-        .topic(this.topicName)
-        .createSubscription(this.subscriptionName);
-      console.log(`訂閱服務 ${this.subscriptionName} 已啟動`);
 
-      // 開始監聽訂閱
-      subscription.on('message', (message) => this.handleMessage(message));
-    } catch (e) {
-      console.log(`正在連結現有的訂閱服務...`);
-      const subscription = this.pubSub.subscription(this.subscriptionName);
-      subscription.on('message', (message) => this.handleMessage(message));
-    }
+    // GCP版本
+    // 1. 取得操作桿 (同步動作，不用 await)
+    const subscription = this.pubSub.subscription(this.subscriptionName);
+
+    // 2. 設定錯誤處理 (萬一門牌號碼不對，會跑這裡)
+    subscription.on('error', (err) => {
+      console.error(`❌ 訂閱連線失敗: ${err.message}`);
+    });
+
+    // 3. 開始聽訊息
+    subscription.on('message', (msg) => this.handleMessage(msg));
+
+    console.log(`📡 已掛載監聽器於: ${this.subscriptionName}`);
+
   }
 
 

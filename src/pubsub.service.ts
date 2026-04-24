@@ -4,13 +4,16 @@ import {PubSub} from '@google-cloud/pubsub';
 @Injectable()
 export class PubSubService implements OnModuleInit {
   private pubSub: PubSub;
-  private topicName = 'machine-status-topic';
+  private topicName = 'machine-status';
 
   async onModuleInit() {
     // 初始化 Pub/Sub 客户端
     this.pubSub = new PubSub({
-      projectId: 'local-project',
+      projectId: process.env.GCP_PROJECT_ID,
     });
+
+    // 加上一點 Log 幫助確認
+    console.log(`PubSub 發送端已初始化，Project ID: ${process.env.GCP_PROJECT_ID}`);
 
     // 確保 Topic 存在（模擬器環境下建議手動確認一次）
     try {
