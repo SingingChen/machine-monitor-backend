@@ -44,7 +44,7 @@ export class MachineWorkerService implements OnModuleInit {
 
     try{
       // 呼叫原本的 MachineService 存入資料庫
-      const result = this.machineService.createStatus(data)
+      const result = await this.machineService.createStatus(data)
       console.log('✅ 訊息處理成功並存入資料庫');
 
       // 關鍵：存檔成功後，立刻廣播給前端！

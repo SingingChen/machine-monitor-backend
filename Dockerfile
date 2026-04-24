@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 
 # 只複製 package 檔案安裝，利用快取縮短之後的 build 時間
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # 複製其餘程式碼
 # 這裡先不寫 RUN npx prisma generate，等我們寫好 schema 再手動跑
