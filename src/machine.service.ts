@@ -15,4 +15,22 @@ export class MachineService {
       },
     });
   }
+
+  async getStats() {
+    const total = await this.prisma.machineStatus.count();
+    const ag = await this.prisma.machineStatus.aggregate({
+      _avg: { temperature: true },
+    });
+    const alerts = await this.prisma.machineStatus.count({
+      where: {
+        temperature: { gt: 50 },
+      },
+    });
+
+    return {
+      totalCount: total,
+      avgTemp: ag._avg.temperature?.toFixed(1) || 0,
+      alertCount: alerts,
+    };
+  }
 }

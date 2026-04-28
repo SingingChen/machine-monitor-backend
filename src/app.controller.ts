@@ -5,7 +5,10 @@ import {PubSubService} from "./pubsub.service";
 @Controller('machine')
 export class AppController {
   // constructor(private readonly machineService: MachineService) {}
-  constructor(private readonly pubsubService: PubSubService) {}
+  constructor(
+      private readonly pubsubService: PubSubService,
+      private readonly machineService: MachineService
+  ) {}
 
   @Post('status')
   async receiveStatus(@Body() statusData: any) {
@@ -24,6 +27,12 @@ export class AppController {
     //   data: result,
     //   db_id: result.id // 回傳資料庫生成的 ID
     // };
+  }
+  // 2. 新增的 GET 路由：負責回傳統計數據
+  @Get('stats')
+  async getStats() {
+    console.log('正在讀取系統統計數據...');
+    return await this.machineService.getStats();
   }
 
 
