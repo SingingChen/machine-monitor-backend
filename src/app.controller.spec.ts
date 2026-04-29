@@ -15,8 +15,9 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should be defined', () => {
+      // 暫時只測試 Controller 是否存在，不測試已經不存在的 getHello
+      expect(appController).toBeDefined();
     });
   });
 });
