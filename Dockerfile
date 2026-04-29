@@ -37,9 +37,14 @@ COPY --from=builder /usr/src/app/node_modules ./node_modules
 COPY --from=builder /usr/src/app/package*.json ./
 COPY --from=builder /usr/src/app/prisma ./prisma
 
+# 關鍵：在生產環境重新確認 Prisma Client
+RUN npx prisma generate
+
 # Cloud Run 預設監聽 8080，我們讓 NestJS 跟進
+# 確保環境變數正確
+ENV NODE_ENV=production
 ENV PORT=8080
 EXPOSE 8080
 
-# 正式環境啟動指令
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+# 正式環境啟動指令 增加一項檢查，確保 dist 資料夾真的存在
+CMD ["sh", "-c", "ls -R dist && npx prisma migrate deploy && node dist/main"]

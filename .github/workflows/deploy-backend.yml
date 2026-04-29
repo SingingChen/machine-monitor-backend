@@ -23,10 +23,13 @@ jobs:
         run: |
           # 這裡改用 Artifact Registry 的標準格式：
           # [區域]-docker.pkg.dev/[專案ID]/[儲存庫名稱]/[映像檔名稱]:[標籤]
-          gcloud builds submit --tag asia-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/machine-api/backend-service:latest .
+          gcloud builds submit \
+            --tag asia-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/machine-api/backend-service:latest \
+            .
 
       - name: 'Deploy to Cloud Run'
         run: |
+          # 這裡使用 ^|^ 處理含有逗號的 CORS 網址
           gcloud run deploy machine-api \
             --image asia-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/machine-api/backend-service:latest \
             --platform managed \
