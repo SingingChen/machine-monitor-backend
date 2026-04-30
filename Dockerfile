@@ -56,5 +56,9 @@ EXPOSE 8080
 
 # 正式環境啟動指令 增加一項檢查，確保 dist 資料夾真的存在
 # 修正後的啟動指令：指向 dist/src/main
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main"]
+#CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main"]
 
+#db push 的作用：它不看 migrations 資料夾，而是直接拿 schema.prisma 去跟資料庫對照，少了什麼表就直接生出來。
+#真正標訰作法應該要執行 npx prisma migrate dev --name init 產生 migration 檔案，然後在 production 環境執行 npx prisma migrate deploy 來套用 migration。這樣才符合 Prisma 的標註作法。
+#不過在這裡我們先用 db push 來確保 schema 是最新
+CMD ["sh", "-c", "npx prisma db push && node dist/src/main"]
