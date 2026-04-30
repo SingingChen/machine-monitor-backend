@@ -26,6 +26,8 @@ CMD ["npm", "run", "start:dev"]
 
 # 3. 建構階段 (Builder) - 為了產生 dist 檔案
 FROM base AS builder
+WORKDIR /usr/src/app
+
 # 確保在編譯前產生 Prisma Client，否則編譯會找不到型別
 RUN npx prisma generate
 RUN npm run build
@@ -44,10 +46,8 @@ RUN npm install --omit=dev --legacy-peer-deps
 COPY --from=builder /usr/src/app/dist ./dist
 #COPY --from=builder /usr/src/app/node_modules ./node_modules
 #COPY --from=builder /usr/src/app/package*.json ./
+COPY --from=builder /usr/src/app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /usr/src/app/prisma ./prisma
-
-# 關鍵：在生產環境重新確認 Prisma Client
-RUN npx prisma generate
 
 # Cloud Run 預設監聽 8080，我們讓 NestJS 跟進
 # 確保環境變數正確
@@ -57,4 +57,4 @@ EXPOSE 8080
 
 # 正式環境啟動指令 增加一項檢查，確保 dist 資料夾真的存在
 
-CMD ["sh", "-c", "ls -d dist && ls dist/main.js && npx prisma migrate deploy && node dist/main"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
