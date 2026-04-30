@@ -37,4 +37,4 @@ jobs:
             --allow-unauthenticated \
             --session-affinity \
             --memory 1Gi \
-            --set-env-vars "^|^DATABASE_URL=${{ secrets.DATABASE_URL }}|CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}"
+            --set-env-vars "^|^DATABASE_URL=${{ secrets.DATABASE_URL }}|CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}|GOOGLE_CLOUD_PROJECT=${{ secrets.GCP_PROJECT_ID }}"
