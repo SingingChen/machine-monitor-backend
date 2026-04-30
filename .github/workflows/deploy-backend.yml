@@ -36,4 +36,5 @@ jobs:
             --region asia-east1 \
             --allow-unauthenticated \
             --session-affinity \
+            --memory 1Gi \
             --set-env-vars "^|^DATABASE_URL=${{ secrets.DATABASE_URL }}|CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}"
