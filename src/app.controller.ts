@@ -32,4 +32,18 @@ export class AppController {
     console.log('正在讀取系統統計數據...');
     return await this.machineService.getStats();
   }
+
+  @Post('pubsub-push')
+  async handlePubSubPush(@Body() body: any) {
+    // GCP 推播的資料會經過 Base64 編碼，放在 message.data 裡
+    const encodedData = body.message.data;
+    const decodedData = JSON.parse(
+      Buffer.from(encodedData, 'base64').toString(),
+    );
+
+    console.log('📬 收到 GCP Push 推播:', decodedData);
+
+    // 直接執行寫入資料庫
+    return await this.machineService.createStatus(decodedData);
+  }
 }
