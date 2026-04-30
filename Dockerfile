@@ -44,9 +44,8 @@ RUN npm install --omit=dev --legacy-peer-deps
 
 # 為了節省空間，只複製編譯後的檔案與必要的套件
 COPY --from=builder /usr/src/app/dist ./dist
-#COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /usr/src/app/node_modules ./node_modules
 #COPY --from=builder /usr/src/app/package*.json ./
-COPY --from=builder /usr/src/app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /usr/src/app/prisma ./prisma
 
 # Cloud Run 預設監聽 8080，我們讓 NestJS 跟進
