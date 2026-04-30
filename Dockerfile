@@ -56,6 +56,6 @@ ENV PORT=8080
 EXPOSE 8080
 
 # 正式環境啟動指令 增加一項檢查，確保 dist 資料夾真的存在
-CMD ["node", "dist/main"]
-#CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+# 修正後的啟動指令：指向 dist/src/main
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main"]
 
