@@ -12,7 +12,6 @@ export class MachineService {
   ) {}
 
   async createStatus(data: { id: string; temp: number; status: string }) {
-
     console.log('📥 收到新資料，準備存入 Prisma...', data.id);
     // A. 先存入資料庫
     const newLog = await this.prisma.machineStatus.create({
