@@ -22,3 +22,11 @@ model MachineStatus {
   rawData     Json
   createdAt   DateTime @default(now())
 }
+
+model User {
+  id        Int      @id @default(autoincrement()) // 唯一識別用戶的 ID
+  username  String   @unique // 確保用戶名唯一
+  password  String // 存儲經 bcrypt 加密後的字串
+  role      String   @default("USER") // 角色：USER 或 ADMIN
+  createdAt DateTime @default(now()) // 記錄用戶創建時間
+}
