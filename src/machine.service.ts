@@ -50,4 +50,18 @@ export class MachineService {
       alertCount: alerts,
     };
   }
+
+  // 🎯 根據機器 ID 取得最新一筆狀態資料
+  async getLatestStatus(machineId: string) {
+    const latestStatus = await this.prisma.machineStatus.findFirst({
+      where: {
+        machineId: machineId,
+      },
+      orderBy: {
+        createdAt: 'desc', // 最新的在前面
+      },
+    });
+
+    return latestStatus; // 找不到時回傳 null
+  }
 }
