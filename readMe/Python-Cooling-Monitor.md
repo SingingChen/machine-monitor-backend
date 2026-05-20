@@ -1,11 +1,11 @@
 # Python 冷卻設備監控系統開發紀錄
 
-> 📅 開發日期：2026-05-19  
-> 🎯 目標：建立 Python 自動化監控程式，透過 Redfish API 即時監控冷卻設備溫度與健康狀態
+>  開發日期：2026-05-19  
+>  目標：建立 Python 自動化監控程式，透過 Redfish API 即時監控冷卻設備溫度與健康狀態
 
 ---
 
-## 📋 系統架構概述
+##  系統架構概述
 
 本系統採用**前後端分離**的監控架構：
 
@@ -35,7 +35,7 @@
 
 ---
 
-## 🛠️ 開發步驟
+## ️ 開發步驟
 
 ### 步驟 1：建立 Python 監控腳本
 
@@ -69,12 +69,12 @@ import os
 import time
 import requests
 
-# 🎯 優先讀取 Docker 給的環境變數，讀不到才用 localhost
+#  優先讀取 Docker 給的環境變數，讀不到才用 localhost
 REDFISH_URL = os.getenv("REDFISH_URL", "http://localhost:3000/redfish/v1/Chassis/MAC-002/Thermal")
 
 def monitor_cooling_system():
-    print("🚀 高力冷卻設備自動化監控軟體已啟動...")
-    print("📡 正在透過 Redfish 協定監控設備狀態...\n")
+    print(" 高力冷卻設備自動化監控軟體已啟動...")
+    print(" 正在透過 Redfish 協定監控設備狀態...\n")
 
     while True:
         try:
@@ -94,7 +94,7 @@ def monitor_cooling_system():
 
                 # 3. 根據健康狀態執行不同的控制邏輯
                 if health_status == "Critical":
-                    print(f"❌ [🚨 警報] 設備 {chassis_id} 發生異常！")
+                    print(f"❌ [ 警報] 設備 {chassis_id} 發生異常！")
                     print(f"   ⚠️ 傳感器: {sensor_name}")
                     print(f"   ⚠️ 當前水溫: {current_temp}°C (已超越臨界值 {critical_threshold}°C)")
                     print(f"   ⚙️ [自動控制下達]: 觸發冷卻閥門全開，並準備通知工程師...\n")
@@ -105,7 +105,7 @@ def monitor_cooling_system():
                 print(f"⚠️ 無法讀取 Redfish 數據，錯誤碼: {response.status_code}")
 
         except Exception as e:
-            print(f"💥 連線失敗，請確保 NestJS 後端容器運作中。錯誤訊息: {e}")
+            print(f" 連線失敗，請確保 NestJS 後端容器運作中。錯誤訊息: {e}")
 
         # 4. 每 3 秒輪詢一次
         time.sleep(3)
@@ -201,8 +201,8 @@ python3 monitor.py
 
 **預期輸出（正常情況）：**
 ```
-🚀 高力冷卻設備自動化監控軟體已啟動...
-📡 正在透過 Redfish 協定監控設備狀態...
+ 高力冷卻設備自動化監控軟體已啟動...
+ 正在透過 Redfish 協定監控設備狀態...
 
 ✅ [正常] 設備 MAC-002 運作良好 | 當前水溫: 28.5°C | 狀態: OK
 ✅ [正常] 設備 MAC-002 運作良好 | 當前水溫: 28.5°C | 狀態: OK
@@ -225,7 +225,7 @@ curl -X POST http://localhost:3000/machine/status \
 
 **預期輸出（警報觸發）：**
 ```
-❌ [🚨 警報] 設備 MAC-002 發生異常！
+❌ [ 警報] 設備 MAC-002 發生異常！
    ⚠️ 傳感器: Internal Water Loop Temperature
    ⚠️ 當前水溫: 92.8°C (已超越臨界值 85.0°C)
    ⚙️ [自動控制下達]: 觸發冷卻閥門全開，並準備通知工程師...
@@ -255,7 +255,7 @@ python3 monitor.py
 
 ### 步驟 4：Docker 化部署（推薦）
 
-> 📖 **詳細解析文件**：[Docker-Deployment-Details.md](./Docker-Deployment-Details.md)  
+>  **詳細解析文件**：[Docker-Deployment-Details.md](./Docker-Deployment-Details.md)  
 > 包含 Dockerfile 逐行解析、docker-compose.yml 配置詳解、網路通訊原理等深入說明
 
 #### 4.1 建立 requirements.txt
@@ -399,7 +399,7 @@ docker-compose logs monitor -f
 
 ---
 
-## 📊 監控流程圖
+##  監控流程圖
 
 ```
 ┌────────────────────────────────────────────────────────────┐
@@ -452,7 +452,7 @@ docker-compose logs monitor -f
 
 ---
 
-## 🎯 關鍵設計決策
+##  關鍵設計決策
 
 ### 1. 為什麼選擇輪詢 (Polling) 而非 WebSocket？
 
@@ -504,14 +504,14 @@ try:
         
 except Exception as e:
     # 網路錯誤、連線逾時等
-    print(f"💥 連線失敗，請確保後端容器運作中。錯誤訊息: {e}")
+    print(f" 連線失敗，請確保後端容器運作中。錯誤訊息: {e}")
 ```
 
 **不會因為單次錯誤而停止**：即使 API 暫時不可用，程式會繼續輪詢。
 
 ---
 
-## 🔧 實際應用場景
+##  實際應用場景
 
 ### 場景 1：冷卻系統正常運作
 
@@ -527,7 +527,7 @@ except Exception as e:
 
 ```
 輸入：溫度 ≥ 85°C
-輸出：❌ [🚨 警報] 設備發生異常
+輸出：❌ [ 警報] 設備發生異常
 動作：
   1. 觸發冷卻閥門全開
   2. 發送通知給工程師
@@ -540,7 +540,7 @@ except Exception as e:
 
 ```
 輸入：HTTP 錯誤或網路失敗
-輸出：💥 連線失敗
+輸出： 連線失敗
 動作：
   1. 顯示錯誤訊息
   2. 繼續輪詢（不中斷監控）
@@ -549,7 +549,7 @@ except Exception as e:
 
 ---
 
-## 🚀 擴展功能建議
+##  擴展功能建議
 
 ### 1. 多設備監控
 
@@ -575,7 +575,7 @@ def send_alert(device_id, temperature):
     send_email(f"設備 {device_id} 溫度異常：{temperature}°C")
     
     # Slack 通知
-    requests.post(SLACK_WEBHOOK, json={"text": f"🚨 警報：{device_id}"})
+    requests.post(SLACK_WEBHOOK, json={"text": f" 警報：{device_id}"})
     
     # Line Notify
     requests.post(LINE_API, headers={"Authorization": f"Bearer {TOKEN}"}, 
@@ -624,7 +624,7 @@ health_gauge.labels(device_id=chassis_id).set(1 if health_status == "OK" else 0)
 
 ---
 
-## 🔍 故障排除
+##  故障排除
 
 ### 問題 1：`ModuleNotFoundError: No module named 'requests'`
 
@@ -686,7 +686,7 @@ curl -X POST http://localhost:3000/machine/status \
 
 ---
 
-## 📁 專案檔案結構
+##  專案檔案結構
 
 ```
 machine-monitor/
@@ -700,7 +700,7 @@ machine-monitor/
 │   │   ├── machine.service.ts        # 包含 getLatestStatus() 方法
 │   │   └── ...
 │   ├── readMe/
-│   │   ├── Python-Cooling-Monitor.md # 📄 本文件
+│   │   ├── Python-Cooling-Monitor.md #  本文件
 │   │   ├── DEV-LOG-Redfish-API.md    # Redfish API 開發紀錄
 │   │   └── ...
 │   └── ...
@@ -726,7 +726,7 @@ machine-monitor/
 
 ---
 
-## 📚 相關文件
+##  相關文件
 
 - [DEV-LOG-Redfish-API.md](./DEV-LOG-Redfish-API.md) - Redfish API 完整開發紀錄
 - [AGENTS.md](/home/nickfeng/workspace/demo/machine-monitor/AGENTS.md) - 專案架構總覽
@@ -734,7 +734,7 @@ machine-monitor/
 
 ---
 
-**開發完成！** 🎉
+**開發完成！** 
 
 Python 監控程式現已可獨立運行，持續監控冷卻設備狀態並自動執行控制邏輯。
 
