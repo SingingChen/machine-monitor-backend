@@ -19,25 +19,23 @@ export class MachineWorkerService implements OnModuleInit {
       projectId: process.env.GCP_PROJECT_ID,
     });
 
-    // 如果是在雲端環境 (或是你想保留 Pull 模式的環境)，才執行監聽
-    // 如果你現在主要是用 Push 模式，建議本機開發時可以先註解掉這段，或加個判斷
-    if (process.env.NODE_ENV === 'production') {
-      // GCP版本
-      // 1. 取得操作桿 (同步動作，不用 await)
-      const subscription = this.pubSub.subscription(this.subscriptionName);
+    // 🚫 暫時禁用 Pull 模式監聽，因為我們使用 Push subscription
+    // 如果你想啟用 Pull 模式，請確保 GCP 沒有設定 Push subscription
+    console.log(`⚙️  Worker Service 已載入但監聽已禁用（使用 Push 模式）`);
 
-      // 2. 設定錯誤處理 (萬一門牌號碼不對，會跑這裡)
+    // ⬇️ 如果要啟用 Pull 模式，請取消以下註解並確保 GCP 沒有 Push subscription
+    /*
+    if (process.env.NODE_ENV === 'production') {
+      const subscription = this.pubSub.subscription(this.subscriptionName);
       subscription.on('error', (err) => {
         console.error(`❌ 訂閱連線失敗: ${err.message}`);
       });
-
-      // 3. 開始聽訊息
       subscription.on('message', (msg) => this.handleMessage(msg));
-
       console.log(`📡 已掛載監聽器於: ${this.subscriptionName}`);
     } else {
       console.log(`💻 本地模式：跳過 Pub/Sub 監聽 (改由 Controller 直接觸發)`);
     }
+    */
   }
 
   private async handleMessage(message: any) {
