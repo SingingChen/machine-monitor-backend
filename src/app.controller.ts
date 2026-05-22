@@ -51,7 +51,8 @@ export class AppController {
     try {
       // 記錄消息 ID（用於除錯和去重）
       const messageId = body.message.messageId || 'unknown';
-      console.log('📬 收到 GCP Push 推播 (Message ID:', messageId + ')');
+      const publishTime = body.message.publishTime; // Pub/Sub 發布時間
+      console.log('📬 收到 GCP Push 推播 (Message ID:', messageId, ', Publish Time:', publishTime + ')');
 
       // GCP 推播的資料會經過 Base64 編碼，放在 message.data 裡
       const encodedData = body.message.data;
@@ -60,6 +61,20 @@ export class AppController {
       );
 
       console.log('📥 解碼資料:', decodedData);
+
+      // 🎯 冪等性檢查：檢查最近 30 秒內是否有相同的資料
+      const recentDuplicate = await this.machineService.checkRecentDuplicate(
+        decodedData.id,
+        decodedData.temp,
+        30 // 檢查最近 30 秒
+      );
+
+      if (recentDuplicate) {
+        console.log('⚠️  檢測到重複資料，跳過處理 (Message ID:', messageId + ')');
+        console.log('   相同資料已於', recentDuplicate.createdAt, '寫入');
+        // 返回成功（告訴 Pub/Sub 消息已處理，避免無限重試）
+        return { success: true, skipped: true, reason: 'duplicate', messageId };
+      }
 
       // 執行寫入資料庫
       await this.machineService.createStatus(decodedData);

@@ -64,4 +64,28 @@ export class MachineService {
 
     return latestStatus; // 找不到時回傳 null
   }
+
+  // 🎯 檢查最近是否有重複的資料（用於 Pub/Sub 去重）
+  async checkRecentDuplicate(
+    machineId: string,
+    temperature: number,
+    withinSeconds: number = 30,
+  ) {
+    const cutoffTime = new Date(Date.now() - withinSeconds * 1000);
+
+    const duplicate = await this.prisma.machineStatus.findFirst({
+      where: {
+        machineId: machineId,
+        temperature: temperature,
+        createdAt: {
+          gte: cutoffTime, // 大於等於截止時間（最近 N 秒內）
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return duplicate; // 找到重複資料時回傳該記錄，否則回傳 null
+  }
 }
